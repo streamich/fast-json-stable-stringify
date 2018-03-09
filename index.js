@@ -1,26 +1,26 @@
 'use strict';
 
 var keyList = Object.keys;
+var native_stringify = JSON.stringify;
 
-function stringify(val, isArrayProp) {
+function stringify(val, allowUndefined) {
     var i, max, str, keys, key, propVal;
 
     if (val === true) return 'true';
     if (val === false) return 'false';
     if (val === null) return 'null';
 
-    switch (typeof val) {
-    case 'object':
+    if (val instanceof Object) {
         if (val.toJSON && typeof val.toJSON === 'function')
-            return stringify(val.toJSON(), isArrayProp);
+            return stringify(val.toJSON(), allowUndefined);
 
         if (val instanceof Array) {
             str = '[';
             max = val.length - 1;
             for(i = 0; i < max; i++)
-                str += stringify(val[i], true) + ',';
+                str += stringify(val[i], false) + ',';
             if (max > -1) {
-                str += stringify(val[i], true);
+                str += stringify(val[i], false);
             }
 
             return str + ']';
@@ -33,24 +33,27 @@ function stringify(val, isArrayProp) {
         i = 0;
         while (i < max) {
             key = keys[i];
-            propVal = stringify(val[key], false);
+            propVal = stringify(val[key], true);
             if (propVal !== undefined) {
                 if (str) {
                     str += ',';
                 }
-                str += JSON.stringify(key) + ':' + propVal;
+                str += native_stringify(key) + ':' + propVal;
             }
             i++;
         }
         return '{' + str + '}';
+    }
+
+    switch (typeof val) {
     case 'function':
     case 'undefined':
-        return isArrayProp ? null : undefined;
+        return allowUndefined ? undefined : null;
     case 'string':
-        return JSON.stringify(val);
+        return native_stringify(val);
     default:
         return isFinite(val) ? val : null;
     }
 }
 
-module.exports = stringify;
+module.exports = function(obj) { return '' + stringify(obj, false); };
