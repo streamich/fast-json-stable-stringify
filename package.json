@@ -1,6 +1,6 @@
 {
   "name": "fastest-stable-stringify",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fastest stable deterministic JSON.stringify()",
   "main": "index.js",
   "dependencies": {},
@@ -25,9 +25,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/streamich/fast-json-stable-stringify"
+    "url": "https://github.com/streamich/fastest-stable-stringify"
   },
-  "homepage": "https://github.com/streamich/fast-json-stable-stringify",
+  "homepage": "https://github.com/streamich/fastest-stable-stringify",
   "keywords": [
     "json",
     "stringify",
