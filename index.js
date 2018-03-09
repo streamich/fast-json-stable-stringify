@@ -7,11 +7,11 @@ function stringify(val, isArrayProp) {
 
     if (val === true) return 'true';
     if (val === false) return 'false';
+    if (val === null) return 'null';
 
     switch (typeof val) {
     case 'object':
-        if (val === null) return null;
-        else if (val.toJSON && typeof val.toJSON === 'function')
+        if (val.toJSON && typeof val.toJSON === 'function')
             return stringify(val.toJSON(), isArrayProp);
 
         if (val instanceof Array) {
@@ -53,10 +53,4 @@ function stringify(val, isArrayProp) {
     }
 }
 
-module.exports = function(val) {
-    var returnVal = stringify(val, false);
-
-    if (returnVal !== undefined) {
-        return '' + returnVal;
-    }
-};
+module.exports = stringify;
