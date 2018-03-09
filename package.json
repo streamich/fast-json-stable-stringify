@@ -11,6 +11,7 @@
     "fast-stable-stringify": "latest",
     "faster-stable-stringify": "latest",
     "json-stable-stringify": "latest",
+    "fast-json-stable-stringify": "latest",
     "nyc": "^11.2.1",
     "pre-commit": "^1.2.2",
     "tape": "~1.0.4"
