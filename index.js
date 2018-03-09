@@ -8,7 +8,7 @@ function stringify(val, allowUndefined) {
 
     tipeof = typeof val;
 
-    if (tipeof === 'string') return native_stringify(val, null, 0);
+    if (tipeof === 'string') return native_stringify(val);
     if (val === true) return 'true';
     if (val === false) return 'false';
     if (val === null) return 'null';
@@ -17,11 +17,7 @@ function stringify(val, allowUndefined) {
         str = '[';
         max = val.length - 1;
         for(i = 0; i < max; i++)
-            if (typeof val[i] === 'string') {
-                str += native_stringify(val[i], null, 0) + ',';
-            } else {
-                str += stringify(val[i], false) + ',';
-            }
+            str += stringify(val[i], false) + ',';
         if (max > -1) {
             str += stringify(val[i], false);
         }
@@ -45,7 +41,7 @@ function stringify(val, allowUndefined) {
                 if (i) {
                     str += ',';
                 }
-                str += native_stringify(key, null, 0) + ':' + propVal;
+                str += native_stringify(key) + ':' + propVal;
             }
             i++;
         }
