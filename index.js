@@ -4,27 +4,34 @@ var keyList = Object.keys;
 var native_stringify = JSON.stringify;
 
 function stringify(val, allowUndefined) {
-    var i, max, str, keys, key, propVal;
+    var i, max, str, keys, key, propVal, tipeof;
 
+    tipeof = typeof val;
+
+    if (tipeof === 'string') return native_stringify(val, null, 0);
     if (val === true) return 'true';
     if (val === false) return 'false';
     if (val === null) return 'null';
 
-    if (val instanceof Object) {
-        if (val.toJSON && typeof val.toJSON === 'function')
-            return stringify(val.toJSON(), allowUndefined);
-
-        if (val instanceof Array) {
-            str = '[';
-            max = val.length - 1;
-            for(i = 0; i < max; i++)
+    if (val instanceof Array) {
+        str = '[';
+        max = val.length - 1;
+        for(i = 0; i < max; i++)
+            if (typeof val[i] === 'string') {
+                str += native_stringify(val[i], null, 0) + ',';
+            } else {
                 str += stringify(val[i], false) + ',';
-            if (max > -1) {
-                str += stringify(val[i], false);
             }
-
-            return str + ']';
+        if (max > -1) {
+            str += stringify(val[i], false);
         }
+
+        return str + ']';
+    }
+
+    if (val instanceof Object) {
+        if (typeof val.toJSON === 'function')
+            return stringify(val.toJSON(), allowUndefined);
 
         // only object is left
         keys = keyList(val).sort();
@@ -35,22 +42,20 @@ function stringify(val, allowUndefined) {
             key = keys[i];
             propVal = stringify(val[key], true);
             if (propVal !== undefined) {
-                if (str) {
+                if (i) {
                     str += ',';
                 }
-                str += native_stringify(key) + ':' + propVal;
+                str += native_stringify(key, null, 0) + ':' + propVal;
             }
             i++;
         }
         return '{' + str + '}';
     }
 
-    switch (typeof val) {
+    switch (tipeof) {
     case 'function':
     case 'undefined':
         return allowUndefined ? undefined : null;
-    case 'string':
-        return native_stringify(val);
     default:
         return isFinite(val) ? val : null;
     }
