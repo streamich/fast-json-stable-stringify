@@ -1,7 +1,7 @@
 {
-  "name": "fast-json-stable-stringify",
-  "version": "2.0.0",
-  "description": "deterministic `JSON.stringify()` - a faster version of substack's json-stable-strigify without jsonify",
+  "name": "fastest-stable-stringify",
+  "version": "1.0.0",
+  "description": "Fastest stable deterministic JSON.stringify()",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
@@ -25,9 +25,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/epoberezkin/fast-json-stable-stringify.git"
+    "url": "https://github.com/streamich/fast-json-stable-stringify"
   },
-  "homepage": "https://github.com/epoberezkin/fast-json-stable-stringify",
+  "homepage": "https://github.com/streamich/fast-json-stable-stringify",
   "keywords": [
     "json",
     "stringify",
@@ -35,11 +35,6 @@
     "hash",
     "stable"
   ],
-  "author": {
-    "name": "James Halliday",
-    "email": "mail@substack.net",
-    "url": "http://substack.net"
-  },
   "license": "MIT",
   "nyc": {
     "exclude": [
