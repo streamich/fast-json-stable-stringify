@@ -1,10 +1,9 @@
 'use strict';
 
-var objToString = Object.prototype.toString;
 var keyList = Object.keys;
 
 function stringify(val, isArrayProp) {
-    var i, max, str, keys, key, propVal, toStr;
+    var i, max, str, keys, key, propVal;
 
     if (val === true) return 'true';
     if (val === false) return 'false';
@@ -12,11 +11,10 @@ function stringify(val, isArrayProp) {
     switch (typeof val) {
     case 'object':
         if (val === null) return null;
-        if (val.toJSON && typeof val.toJSON === 'function')
+        else if (val.toJSON && typeof val.toJSON === 'function')
             return stringify(val.toJSON(), isArrayProp);
 
-        toStr = objToString.call(val);
-        if (toStr === '[object Array]') {
+        if (val instanceof Array) {
             str = '[';
             max = val.length - 1;
             for(i = 0; i < max; i++)
@@ -28,27 +26,23 @@ function stringify(val, isArrayProp) {
             return str + ']';
         }
 
-        if (toStr === '[object Object]') {
-            // only object is left
-            keys = keyList(val).sort();
-            max = keys.length;
-            str = '';
-            i = 0;
-            while (i < max) {
-                key = keys[i];
-                propVal = stringify(val[key], false);
-                if (propVal !== undefined) {
-                    if (str) {
-                        str += ',';
-                    }
-                    str += JSON.stringify(key) + ':' + propVal;
+        // only object is left
+        keys = keyList(val).sort();
+        max = keys.length;
+        str = '';
+        i = 0;
+        while (i < max) {
+            key = keys[i];
+            propVal = stringify(val[key], false);
+            if (propVal !== undefined) {
+                if (str) {
+                    str += ',';
                 }
-                i++;
+                str += JSON.stringify(key) + ':' + propVal;
             }
-            return '{' + str + '}';
+            i++;
         }
-
-        return JSON.stringify(val);
+        return '{' + str + '}';
     case 'function':
     case 'undefined':
         return isArrayProp ? null : undefined;
