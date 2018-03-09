@@ -1,59 +1,68 @@
 'use strict';
 
-module.exports = function (data, opts) {
-    if (!opts) opts = {};
-    if (typeof opts === 'function') opts = { cmp: opts };
-    var cycles = (typeof opts.cycles === 'boolean') ? opts.cycles : false;
+var objToString = Object.prototype.toString;
+var keyList = Object.keys;
 
-    var cmp = opts.cmp && (function (f) {
-        return function (node) {
-            return function (a, b) {
-                var aobj = { key: a, value: node[a] };
-                var bobj = { key: b, value: node[b] };
-                return f(aobj, bobj);
-            };
-        };
-    })(opts.cmp);
+function stringify(val, isArrayProp) {
+    var i, max, str, keys, key, propVal, toStr;
 
-    var seen = [];
-    return (function stringify (node) {
-        if (node && node.toJSON && typeof node.toJSON === 'function') {
-            node = node.toJSON();
-        }
+    if (val === true) return 'true';
+    if (val === false) return 'false';
 
-        if (node === undefined) return;
-        if (typeof node == 'number') return isFinite(node) ? '' + node : 'null';
-        if (typeof node !== 'object') return JSON.stringify(node);
+    switch (typeof val) {
+    case 'object':
+        if (val === null) return null;
+        if (val.toJSON && typeof val.toJSON === 'function')
+            return stringify(val.toJSON(), isArrayProp);
 
-        var i, out;
-        if (Array.isArray(node)) {
-            out = '[';
-            for (i = 0; i < node.length; i++) {
-                if (i) out += ',';
-                out += stringify(node[i]) || 'null';
+        toStr = objToString.call(val);
+        if (toStr === '[object Array]') {
+            str = '[';
+            max = val.length - 1;
+            for(i = 0; i < max; i++)
+                str += stringify(val[i], true) + ',';
+            if (max > -1) {
+                str += stringify(val[i], true);
             }
-            return out + ']';
+
+            return str + ']';
         }
 
-        if (node === null) return 'null';
-
-        if (seen.indexOf(node) !== -1) {
-            if (cycles) return JSON.stringify('__cycle__');
-            throw new TypeError('Converting circular structure to JSON');
+        if (toStr === '[object Object]') {
+            // only object is left
+            keys = keyList(val).sort();
+            max = keys.length;
+            str = '';
+            i = 0;
+            while (i < max) {
+                key = keys[i];
+                propVal = stringify(val[key], false);
+                if (propVal !== undefined) {
+                    if (str) {
+                        str += ',';
+                    }
+                    str += JSON.stringify(key) + ':' + propVal;
+                }
+                i++;
+            }
+            return '{' + str + '}';
         }
 
-        var seenIndex = seen.push(node) - 1;
-        var keys = Object.keys(node).sort(cmp && cmp(node));
-        out = '';
-        for (i = 0; i < keys.length; i++) {
-            var key = keys[i];
-            var value = stringify(node[key]);
+        return JSON.stringify(val);
+    case 'function':
+    case 'undefined':
+        return isArrayProp ? null : undefined;
+    case 'string':
+        return JSON.stringify(val);
+    default:
+        return isFinite(val) ? val : null;
+    }
+}
 
-            if (!value) continue;
-            if (out) out += ',';
-            out += JSON.stringify(key) + ':' + value;
-        }
-        seen.splice(seenIndex, 1);
-        return '{' + out + '}';
-    })(data);
+module.exports = function(val) {
+    var returnVal = stringify(val, false);
+
+    if (returnVal !== undefined) {
+        return '' + returnVal;
+    }
 };
