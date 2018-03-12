@@ -1,6 +1,6 @@
 # fastest-stable-stringify
 
-Deterministic `JSON.stringify()` - fastest stable JSON stringifier.
+Deterministic `JSON.stringify()` - fastest stable JSON stringifier. This project combines [fast-json-stable-stringify](https://github.com/epoberezkin/fast-json-stable-stringify) and [fast-stable-stringify](https://github.com/nickyout/fast-stable-stringify) to create the fastest stable JSON stringifier.
 
 
 ## Installation
