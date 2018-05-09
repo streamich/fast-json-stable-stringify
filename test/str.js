@@ -15,6 +15,12 @@ test('object with undefined', function (t) {
     t.equal(stringify(obj), '{"a":3}');
 });
 
+test('object with undefined as first property value', function (t) {
+    t.plan(1);
+    var obj = { a: undefined, z: 3};
+    t.equal(stringify(obj), '{"z":3}');
+});
+
 test('object with null', function (t) {
     t.plan(1);
     var obj = { a: 3, z: null };

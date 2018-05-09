@@ -38,7 +38,7 @@ function stringify(val, allowUndefined) {
             key = keys[i];
             propVal = stringify(val[key], true);
             if (propVal !== undefined) {
-                if (i) {
+                if (i && str !== '') { //if the string is empty, don't add comma to avoid the json to become invalid.
                     str += ',';
                 }
                 str += native_stringify(key) + ':' + propVal;
