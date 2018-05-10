@@ -1,6 +1,6 @@
 {
   "name": "fastest-stable-stringify",
-  "version": "1.0.1",
+  "version": "2.0.1",
   "description": "Fastest stable deterministic JSON.stringify()",
   "main": "index.js",
   "dependencies": {},
